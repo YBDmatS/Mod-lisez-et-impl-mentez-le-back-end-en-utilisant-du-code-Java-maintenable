@@ -1,0 +1,33 @@
+  erDiagram
+    USERS {
+        bigint id PK
+        varchar(255) name
+        varchar(255) email UK
+        varchar(255) password_hash
+        datetime created_at
+        datetime updated_at
+    }
+
+    RENTALS {
+        bigint id PK
+        varchar(255) name
+        decimal surface_area "decimal(10,2)"
+        decimal price_per_night "decimal(10,2)"
+        varchar(255) picture_url
+        text description
+        bigint owner_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    MESSAGES {
+        bigint id PK
+        bigint sender_id FK
+        bigint rental_id FK
+        text content
+        datetime sent_at
+    }
+
+    USERS ||--o{ RENTALS : owns
+    USERS ||--o{ MESSAGES : sends
+    RENTALS ||--o{ MESSAGES : receives

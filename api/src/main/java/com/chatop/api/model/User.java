@@ -62,7 +62,7 @@ public class User {
      * Timestamp of when the user was last updated. This field is required and cannot be null.
      * The value is automatically updated to the current date and time whenever the user entity is updated
      */
-    @Column(name = "update_at", nullable = false)
+    @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

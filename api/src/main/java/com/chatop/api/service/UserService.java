@@ -1,6 +1,7 @@
 package com.chatop.api.service;
 
 import com.chatop.api.dto.UserRegisterRequestDto;
+import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.model.User;
 import com.chatop.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,21 @@ public class UserService {
      * Registers a new user based on the provided registration data transfer object.
      *
      * @param dto the user registration request data transfer object containing user details
+     * @throws UserAlreadyExistsException if a user with the same email already exists
      */
     public void register(UserRegisterRequestDto dto) {
         log.debug("Registering user");
+
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            log.warn("User registration failed: email {} is already used", dto.getEmail());
+            throw new UserAlreadyExistsException("Email already used");
+        }
+
         User user = modelMapper.map(dto, User.class);
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         user.setPasswordHash(encodedPassword);
+        
         userRepository.save(user);
+        log.debug("User registered successfully");
     }
 }

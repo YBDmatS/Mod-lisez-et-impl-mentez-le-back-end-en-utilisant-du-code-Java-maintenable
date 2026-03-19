@@ -1,6 +1,7 @@
 package com.chatop.api.controller;
 
 import com.chatop.api.dto.UserRegisterRequestDto;
+import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,27 +21,22 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AuthController {
 
-    //TODO: Handle exceptions and return appropriate HTTP status codes
-
     private final UserService userService;
 
     /**
      * Registers a new user with the provided registration details.
      *
      * @param request The user registration request containing necessary information for creating a new user account.
-     * @return HTTP 200 OK if registration is successful, or HTTP 500 Internal Server Error if an error occurs during registration.
+     * @return HTTP 200 OK if registration is successful
+     * @throws UserAlreadyExistsException when user registration fails due to an existing user (HTTP 409)
      */
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterRequestDto request) {
 
         log.debug("Received request to register user for email: {}", request.getEmail());
 
-        try {
-            userService.register(request);
-            log.debug("Successfully register user for email: {}", request.getEmail());
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
+        userService.register(request);
+        log.debug("Successfully register user for email: {}", request.getEmail());
+        return ResponseEntity.ok().build();
     }
 }

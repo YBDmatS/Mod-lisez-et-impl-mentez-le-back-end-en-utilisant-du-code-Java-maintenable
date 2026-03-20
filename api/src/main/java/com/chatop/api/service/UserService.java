@@ -1,5 +1,6 @@
 package com.chatop.api.service;
 
+import com.chatop.api.dto.UserJwtResponseDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
 import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.model.User;
@@ -21,6 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     /**
      * Registers a new user based on the provided registration data transfer object.
@@ -28,7 +30,7 @@ public class UserService {
      * @param dto the user registration request data transfer object containing user details
      * @throws UserAlreadyExistsException if a user with the same email already exists
      */
-    public void register(UserRegisterRequestDto dto) {
+    public UserJwtResponseDto register(UserRegisterRequestDto dto) {
         log.debug("Registering user");
 
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -39,8 +41,11 @@ public class UserService {
         User user = modelMapper.map(dto, User.class);
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         user.setPasswordHash(encodedPassword);
-        
+
         userRepository.save(user);
+        UserJwtResponseDto userJwtResponseDto = jwtService.generateToken(user.getId());
+
         log.debug("User registered successfully");
+        return userJwtResponseDto;
     }
 }

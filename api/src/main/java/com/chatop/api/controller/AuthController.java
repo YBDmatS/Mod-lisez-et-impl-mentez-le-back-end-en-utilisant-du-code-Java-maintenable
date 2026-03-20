@@ -1,5 +1,6 @@
 package com.chatop.api.controller;
 
+import com.chatop.api.dto.UserJwtResponseDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
 import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.service.UserService;
@@ -31,12 +32,12 @@ public class AuthController {
      * @throws UserAlreadyExistsException when user registration fails due to an existing user (HTTP 409)
      */
     @PostMapping("/register")
-    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterRequestDto request) {
+    public ResponseEntity<UserJwtResponseDto> registerUser(@Valid @RequestBody UserRegisterRequestDto request) {
 
         log.debug("Received request to register user for email: {}", request.getEmail());
 
-        userService.register(request);
+        UserJwtResponseDto response = userService.register(request);
         log.debug("Successfully register user for email: {}", request.getEmail());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(response);
     }
 }

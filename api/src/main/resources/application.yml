@@ -13,3 +13,8 @@ spring:
   # Database configuration
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # Security configuration
+security:
+  jwt:
+    secret: ${JWT_SECRET}

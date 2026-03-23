@@ -31,7 +31,7 @@ public class UserService {
      * @throws UserAlreadyExistsException if a user with the same email already exists
      */
     public UserJwtResponseDto register(UserRegisterRequestDto dto) {
-        log.debug("Registering user");
+        log.debug("Registering user for email: {}", dto.getEmail());
 
         if (userRepository.existsByEmail(dto.getEmail())) {
             log.warn("User registration failed: email {} is already used", dto.getEmail());
@@ -43,9 +43,9 @@ public class UserService {
         user.setPasswordHash(encodedPassword);
 
         userRepository.save(user);
-        UserJwtResponseDto userJwtResponseDto = jwtService.generateToken(user.getId());
+        String jwt = jwtService.generateToken(user.getId());
 
-        log.debug("User registered successfully");
-        return userJwtResponseDto;
+        log.debug("User with email {} registered successfully", user.getEmail());
+        return new UserJwtResponseDto(jwt);
     }
 }

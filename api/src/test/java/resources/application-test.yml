@@ -1,0 +1,4 @@
+# Security configuration
+security:
+  jwt:
+    secret: test-secret-key-for-security-tests

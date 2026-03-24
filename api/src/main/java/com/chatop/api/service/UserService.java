@@ -1,6 +1,7 @@
 package com.chatop.api.service;
 
 import com.chatop.api.dto.UserJwtResponseDto;
+import com.chatop.api.dto.UserLoginRequestDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
 import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.model.User;
@@ -8,6 +9,9 @@ import com.chatop.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,7 @@ public class UserService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     /**
      * Registers a new user based on the provided registration data transfer object.
@@ -46,6 +51,28 @@ public class UserService {
         String jwt = jwtService.generateToken(user.getId());
 
         log.debug("User with email {} registered successfully", user.getEmail());
+        return new UserJwtResponseDto(jwt);
+    }
+
+    /**
+     * Authenticates a user based on the provided login data transfer object and returns a JWT token if successful.
+     *
+     * @param dto the user login request data transfer object containing email and password for authentication
+     * @return a UserJwtResponseDto containing the generated JWT token if authentication is successful
+     */
+    public UserJwtResponseDto login(UserLoginRequestDto dto) {
+        log.debug("Login user for email: {}", dto.getEmail());
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        dto.getEmail(),
+                        dto.getPassword()
+                )
+        );
+        User user = (User) authentication.getPrincipal();
+        String jwt = jwtService.generateToken(user.getId());
+
+        log.debug("User with email {} logged successfully", user.getEmail());
         return new UserJwtResponseDto(jwt);
     }
 }

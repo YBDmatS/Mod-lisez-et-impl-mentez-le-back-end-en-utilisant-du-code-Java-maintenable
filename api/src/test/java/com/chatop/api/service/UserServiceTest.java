@@ -1,5 +1,6 @@
 package com.chatop.api.service;
 
+import com.chatop.api.dto.UserJwtResponseDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
 import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.model.User;
@@ -29,6 +30,8 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private ModelMapper modelMapper;
+    @Mock
+    private JwtService jwtService;
     @InjectMocks
     private UserService userService;
     private UserRegisterRequestDto testDto;
@@ -37,6 +40,7 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         testUser = new User();
+        testUser.setId(1L);
         testUser.setName("Test User");
         testUser.setEmail("user@test.com");
 
@@ -47,23 +51,30 @@ class UserServiceTest {
     }
 
     @Test
-    void register_shouldSaveUser_whenDtoIsValid() {
+    void register_shouldSaveUserAndReturnJwt_whenDtoIsValid() {
 
         // Given
         String encodedPassword = "encoded-password";
+        String expectedJwt = "jwt";
+
         when(userRepository.existsByEmail(testDto.getEmail())).thenReturn(false);
         when(modelMapper.map(testDto, User.class)).thenReturn(testUser);
         when(passwordEncoder.encode(testDto.getPassword())).thenReturn(encodedPassword);
+        when(userRepository.save(testUser)).thenReturn(testUser);
+        when(jwtService.generateToken(testUser.getId())).thenReturn(expectedJwt);
 
         // When
-        userService.register(testDto);
+        UserJwtResponseDto result = userService.register(testDto);
 
         // Then
         verify(userRepository).existsByEmail(testDto.getEmail());
         verify(modelMapper).map(testDto, User.class);
         verify(passwordEncoder).encode(testDto.getPassword());
         verify(userRepository).save(testUser);
+        verify(jwtService).generateToken(testUser.getId());
+
         assertEquals(encodedPassword, testUser.getPasswordHash());
+        assertEquals(expectedJwt, result.getJwt());
     }
 
     @Test
@@ -82,6 +93,7 @@ class UserServiceTest {
         verify(modelMapper, never()).map(any(), eq(User.class));
         verify(passwordEncoder, never()).encode(any());
         verify(userRepository, never()).save(any());
+        verify(jwtService, never()).generateToken(anyLong());
     }
 
     @Test
@@ -104,5 +116,39 @@ class UserServiceTest {
         verify(modelMapper).map(testDto, User.class);
         verify(passwordEncoder).encode(testDto.getPassword());
         verify(userRepository).save(testUser);
+        verify(jwtService, never()).generateToken(anyLong());
+    }
+
+    @Test
+    void register_shouldThrowNullPointerException_whenEncodedPasswordIsNull() {
+        when(userRepository.existsByEmail(testDto.getEmail())).thenReturn(false);
+        when(modelMapper.map(testDto, User.class)).thenReturn(testUser);
+        when(passwordEncoder.encode(testDto.getPassword())).thenReturn(null);
+
+        assertThatThrownBy(() -> userService.register(testDto))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Encoded password must not be null");
+
+        verify(userRepository, never()).save(any());
+        verify(jwtService, never()).generateToken(anyLong());
+    }
+
+    @Test
+    void register_shouldThrowNullPointerException_whenSavedUserIdIsNull() {
+        User savedUser = new User();
+        savedUser.setName("Test User");
+        savedUser.setEmail("user@test.com");
+        savedUser.setPasswordHash("encoded-password");
+
+        when(userRepository.existsByEmail(testDto.getEmail())).thenReturn(false);
+        when(modelMapper.map(testDto, User.class)).thenReturn(testUser);
+        when(passwordEncoder.encode(testDto.getPassword())).thenReturn("encoded-password");
+        when(userRepository.save(testUser)).thenReturn(savedUser);
+
+        assertThatThrownBy(() -> userService.register(testDto))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Saved user id must not be null");
+
+        verify(jwtService, never()).generateToken(anyLong());
     }
 }

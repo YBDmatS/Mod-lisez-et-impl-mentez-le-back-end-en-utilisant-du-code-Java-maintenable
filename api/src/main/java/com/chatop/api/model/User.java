@@ -1,9 +1,11 @@
 package com.chatop.api.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -83,7 +85,7 @@ public class User implements UserDetails {
      * This can be modified to return actual authorities based on the application's requirements.
      */
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
 
@@ -92,7 +94,7 @@ public class User implements UserDetails {
      * This method is used by Spring Security for authentication purposes.
      */
     @Override
-    public String getPassword() {
+    public @Nullable String getPassword() {
         return passwordHash;
     }
 
@@ -101,7 +103,7 @@ public class User implements UserDetails {
      * This method is used by Spring Security for authentication purposes.
      */
     @Override
-    public String getUsername() {
+    public @NonNull String getUsername() {
         return email;
     }
 

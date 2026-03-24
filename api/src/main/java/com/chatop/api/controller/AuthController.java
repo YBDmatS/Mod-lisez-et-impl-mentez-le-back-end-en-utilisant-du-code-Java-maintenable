@@ -1,6 +1,7 @@
 package com.chatop.api.controller;
 
 import com.chatop.api.dto.UserJwtResponseDto;
+import com.chatop.api.dto.UserLoginRequestDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
 import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.service.UserService;
@@ -38,6 +39,22 @@ public class AuthController {
 
         UserJwtResponseDto response = userService.register(request);
         log.debug("Successfully register user for email: {}", request.getEmail());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Authenticates a user with the provided login credentials and returns a JWT token if successful.
+     *
+     * @param request The user login request containing the email and password for authentication.
+     * @return HTTP 200 OK with a JWT token if authentication is successful
+     */
+    @PostMapping("/login")
+    public ResponseEntity<UserJwtResponseDto> login(@Valid @RequestBody UserLoginRequestDto request) {
+
+        log.debug("Received request to login user for email: {}", request.getEmail());
+
+        UserJwtResponseDto response = userService.login(request);
+        log.debug("Successfully login user for email: {}", request.getEmail());
         return ResponseEntity.ok(response);
     }
 }

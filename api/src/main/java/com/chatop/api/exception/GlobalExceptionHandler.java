@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -70,5 +72,34 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles authentication-related exceptions (BadCredentialsException and UsernameNotFoundException)
+     * and returns a 401 Unauthorized response with error details.
+     *
+     * @param e       the exception to handle
+     * @param request the HTTP request that resulted in the exception
+     * @return a ResponseEntity containing the ApiErrorResponse with error details and HTTP status 401 Unauthorized
+     */
+    @ExceptionHandler({
+            BadCredentialsException.class,
+            UsernameNotFoundException.class
+    })
+    public ResponseEntity<ApiErrorResponse> handleAuthenticationException(
+            Exception e,
+            HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.name(),
+                "Invalid credentials",
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(response, status);
     }
 }

@@ -4,10 +4,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * User entity representing a user in the system.
@@ -22,7 +27,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements UserDetails {
 
     /**
      * Unique identifier for the user.
@@ -35,19 +40,20 @@ public class User {
     /**
      * Name of the user. This field is required and cannot be null.
      */
-    @Column(name = "name", nullable = false, length = 255)
+    @Column(name = "name", nullable = false)
     private String name;
 
     /**
      * Email of the user. This field is required, cannot be null, and must be unique across all users.
      */
-    @Column(name = "email", nullable = false, length = 255)
+    @Column(name = "email", nullable = false)
     private String email;
 
     /**
      * Password of the user. This field is required and cannot be null.
      */
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(name = "password_hash", nullable = false)
+    @ToStringExclude
     private String passwordHash;
 
     /**
@@ -65,4 +71,73 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+
+    // ---------------------------------------------------------------------------
+    // UserDetails interface methods for Spring Security
+    // ---------------------------------------------------------------------------
+
+    /**
+     * @return Collection of GrantedAuthority representing the authorities granted to the user.
+     * In this implementation, it returns an empty list, indicating that the user has no specific authorities or roles assigned.
+     * This can be modified to return actual authorities based on the application's requirements.
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    /**
+     * @return String representing the user's password hash.
+     * This method is used by Spring Security for authentication purposes.
+     */
+    @Override
+    public String getPassword() {
+        return passwordHash;
+    }
+
+    /**
+     * @return String representing the username, which in this case is the user's email address.
+     * This method is used by Spring Security for authentication purposes.
+     */
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    /**
+     * @return boolean indicating whether the user account is non-expired.
+     * By default, this returns true, but it can be overridden to implement custom logic for account expiration based on specific conditions or business rules.
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    /**
+     * @return boolean indicating whether the user account is non-locked.
+     * By default, this returns true, but it can be overridden to implement custom logic for account locking based on specific conditions.
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    /**
+     * @return boolean indicating whether the user's credentials (password) are non-expired.
+     * By default, this returns true, but it can be overridden to implement custom logic for credential expiration.
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    /**
+     * @return boolean indicating whether the user account is enabled.
+     * By default, this returns true, but it can be overridden to implement custom logic for enabling or disabling user accounts.
+     */
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

@@ -84,6 +84,11 @@ public class SpringSecurityConfig {
     @Bean
     public SecretKey jwtSecretKey() {
         String secret = jwtProperties.getSecret();
+
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("JWT secret must not be null or blank");
+        }
+        
         return new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
     }
 

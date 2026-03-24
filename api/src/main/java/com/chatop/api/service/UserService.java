@@ -15,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 /**
  * Service handling user-related operations.
  */
@@ -44,11 +46,19 @@ public class UserService {
         }
 
         User user = modelMapper.map(dto, User.class);
-        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+        String encodedPassword = Objects.requireNonNull(
+                passwordEncoder.encode(dto.getPassword()),
+                "Encoded password must not be null"
+        );
         user.setPasswordHash(encodedPassword);
 
-        userRepository.save(user);
-        String jwt = jwtService.generateToken(user.getId());
+        User savedUser = userRepository.save(user);
+
+        Long userId = Objects.requireNonNull(
+                savedUser.getId(),
+                "Saved user id must not be null"
+        );
+        String jwt = jwtService.generateToken(userId);
 
         log.debug("User with email {} registered successfully", user.getEmail());
         return new UserJwtResponseDto(jwt);
@@ -69,8 +79,17 @@ public class UserService {
                         dto.getPassword()
                 )
         );
-        User user = (User) authentication.getPrincipal();
-        String jwt = jwtService.generateToken(user.getId());
+
+        User principal = (User) authentication.getPrincipal();
+        if (!(principal instanceof User user)) {
+            throw new IllegalStateException("Authentication principal is not a User");
+        }
+
+        Long userId = Objects.requireNonNull(
+                user.getId(),
+                "Authenticated user id must not be null"
+        );
+        String jwt = jwtService.generateToken(userId);
 
         log.debug("User with email {} logged successfully", user.getEmail());
         return new UserJwtResponseDto(jwt);

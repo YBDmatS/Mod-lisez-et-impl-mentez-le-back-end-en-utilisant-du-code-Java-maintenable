@@ -52,7 +52,7 @@ public class Rental {
     /**
      * URL of the picture representing the rental property. This field is required and cannot be null.
      */
-    @Column(name = "picture_url", nullable = false, length = 255)
+    @Column(name = "picture_url", nullable = false)
     private String pictureUrl;
 
     /**

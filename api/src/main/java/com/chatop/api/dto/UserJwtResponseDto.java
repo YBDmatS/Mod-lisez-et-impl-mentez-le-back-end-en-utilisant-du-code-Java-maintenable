@@ -17,5 +17,5 @@ public class UserJwtResponseDto {
      * This field is required and must not be blank.
      */
     @NotBlank(message = "JWT token is required")
-    private String jwt;
+    private String token;
 }

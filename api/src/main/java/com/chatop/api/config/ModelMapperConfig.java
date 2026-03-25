@@ -1,6 +1,8 @@
 package com.chatop.api.config;
 
+import com.chatop.api.dto.RentalRequestDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
+import com.chatop.api.model.Rental;
 import com.chatop.api.model.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -23,8 +25,21 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        TypeMap<User, UserRegisterRequestDto> userRegisterRequestTypeMap = modelMapper.createTypeMap(User.class, UserRegisterRequestDto.class);
-        userRegisterRequestTypeMap.addMappings(mapper -> mapper.skip(UserRegisterRequestDto::setPassword));
+        TypeMap<User, UserRegisterRequestDto> userRegisterRequestTypeMap =
+                modelMapper.createTypeMap(User.class, UserRegisterRequestDto.class);
+        userRegisterRequestTypeMap.addMappings(mapper ->
+                mapper.skip(UserRegisterRequestDto::setPassword));
+
+        TypeMap<RentalRequestDto, Rental> typeMap =
+                modelMapper.createTypeMap(RentalRequestDto.class, Rental.class);
+        typeMap.addMappings(mapper -> {
+            mapper.map(RentalRequestDto::getSurface, Rental::setSurfaceArea);
+            mapper.map(RentalRequestDto::getPrice, Rental::setPricePerNight);
+            mapper.skip(Rental::setId);
+            mapper.skip(Rental::setOwner);
+            mapper.skip(Rental::setCreatedAt);
+            mapper.skip(Rental::setUpdatedAt);
+        });
 
         return modelMapper;
     }

@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DisplayName("AuthContoller integration tests")
+@DisplayName("AuthController register endpoint integration tests")
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class AuthControllerIntegrationTest {
+class AuthRegisterControllerIntegrationTest {
 
     public static final String REGISTER_PATH = "/api/auth/register";
 

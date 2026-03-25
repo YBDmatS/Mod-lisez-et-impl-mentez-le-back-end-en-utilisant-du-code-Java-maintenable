@@ -74,7 +74,7 @@ class UserServiceTest {
         verify(jwtService).generateToken(testUser.getId());
 
         assertEquals(encodedPassword, testUser.getPasswordHash());
-        assertEquals(expectedJwt, result.getJwt());
+        assertEquals(expectedJwt, result.getToken());
     }
 
     @Test

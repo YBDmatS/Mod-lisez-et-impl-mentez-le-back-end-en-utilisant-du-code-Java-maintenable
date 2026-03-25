@@ -10,10 +10,6 @@ spring:
   config:
     import: "classpath:env-${spring.profiles.active}.yml"
 
-  # Database configuration
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
   # Security configuration
 security:
   jwt:

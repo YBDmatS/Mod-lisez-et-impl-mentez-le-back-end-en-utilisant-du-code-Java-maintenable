@@ -32,5 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 
-### Properties ###
-src/main/resources/env-dev.yml
+### Env files ###
+env-*.yml

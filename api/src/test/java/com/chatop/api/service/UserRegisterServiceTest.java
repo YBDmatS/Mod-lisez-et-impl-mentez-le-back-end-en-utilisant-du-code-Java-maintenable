@@ -20,9 +20,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@DisplayName("UserService unit tests")
+@DisplayName("User register service unit tests")
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UserRegisterServiceTest {
 
     @Mock
     private UserRepository userRepository;

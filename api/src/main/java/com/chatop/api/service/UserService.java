@@ -2,6 +2,7 @@ package com.chatop.api.service;
 
 import com.chatop.api.dto.UserJwtResponseDto;
 import com.chatop.api.dto.UserLoginRequestDto;
+import com.chatop.api.dto.UserMeResponseDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
 import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.model.User;
@@ -93,5 +94,26 @@ public class UserService {
 
         log.debug("User with email {} logged successfully", user.getEmail());
         return new UserJwtResponseDto(jwt);
+    }
+
+    /**
+     * Retrieves the current authenticated user's information based on the provided user ID.
+     *
+     * @param id the ID of the user to retrieve information for, typically extracted from the JWT token
+     * @return a UserMeResponseDto containing the current user's information if the user is found
+     */
+    public UserMeResponseDto getCurrentUser(Long id) {
+        log.debug("Get current user for userId: {}", id);
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("User with id {} not found", id);
+                    return new IllegalArgumentException("User not found");
+                });
+
+        UserMeResponseDto response = modelMapper.map(user, UserMeResponseDto.class);
+
+        log.debug("Current user for userId: {}", id);
+        return response;
     }
 }

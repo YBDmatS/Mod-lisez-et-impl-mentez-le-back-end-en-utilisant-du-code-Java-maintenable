@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
 
@@ -97,6 +99,70 @@ public class GlobalExceptionHandler {
                 status.value(),
                 status.name(),
                 "Invalid credentials",
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(response, status);
+    }
+
+    /**
+     * Handles MaxUploadSizeExceededException and returns a 413 Content Too Large response.
+     *
+     * @param request the HTTP request that resulted in the exception
+     * @return a ResponseEntity containing the ApiErrorResponse with error details and HTTP status 413
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceededException(HttpServletRequest request) {
+        HttpStatus status = HttpStatus.valueOf(413);
+
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.name(),
+                "File size exceeds the maximum allowed limit",
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(response, status);
+    }
+
+    /**
+     * Handles HttpMediaTypeNotSupportedException and returns a 415 Unsupported Media Type response.
+     *
+     * @param request the HTTP request that resulted in the exception
+     * @return a ResponseEntity containing the ApiErrorResponse with error details and HTTP status 415
+     */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleHttpMediaTypeNotSupportedException(HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.name(),
+                "Content type not supported. Expected: multipart/form-data",
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(response, status);
+    }
+
+    /**
+     * Handles IllegalArgumentException and returns a 400 Bad Request response.
+     *
+     * @param e       the exception to handle
+     * @param request the HTTP request that resulted in the exception
+     * @return a ResponseEntity containing the ApiErrorResponse with error details and HTTP status 400
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.name(),
+                e.getMessage(),
                 request.getRequestURI()
         );
 

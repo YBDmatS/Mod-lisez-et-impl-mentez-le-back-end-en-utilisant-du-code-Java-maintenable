@@ -46,7 +46,7 @@ public class RentalService {
         rental.setOwner(owner);
 
         StoredPicture picture = pictureStorageService.storePicture(request.getPicture());
-        rental.setPictureUrl(picture.url());
+        rental.setPictureUrl(picture.relativeUrl());
 
         try {
             rentalRepository.save(rental);

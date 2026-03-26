@@ -2,7 +2,7 @@ package com.chatop.api.service.storage;
 
 public record StoredPicture(
         String uuid,
-        String url,
+        String relativeUrl,
         String fileName,
         String storagePath
 ) {

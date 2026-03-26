@@ -6,6 +6,8 @@ import com.chatop.api.model.Rental;
 import com.chatop.api.model.User;
 import com.chatop.api.repository.RentalRepository;
 import com.chatop.api.repository.UserRepository;
+import com.chatop.api.service.storage.PictureStorageService;
+import com.chatop.api.service.storage.StoredPicture;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ public class RentalService {
     private final UserRepository userRepository;
     private final RentalRepository rentalRepository;
     private final ModelMapper modelMapper;
+    private final PictureStorageService pictureStorageService;
 
     /**
      * Creates a new rental based on the provided rental request details.
@@ -40,14 +43,24 @@ public class RentalService {
                     log.warn("Failed to create rental: owner not found with id: {}", userId);
                     return new IllegalArgumentException("Owner not found");
                 });
-
         rental.setOwner(owner);
 
-        rental.setPictureUrl("test.com/picture.jpg");
-        
-        rentalRepository.save(rental);
-        log.debug("Rental created successfully with id: {}", rental.getId());
+        StoredPicture picture = pictureStorageService.storePicture(request.getPicture());
+        rental.setPictureUrl(picture.url());
 
+        try {
+            rentalRepository.save(rental);
+            log.debug("Rental created successfully with id: {}", rental.getId());
+        } catch (Exception e) {
+            try {
+                pictureStorageService.deleteByStoragePath(picture.storagePath());
+            } catch (Exception cleanupException) {
+                log.error("Failed to delete stored picture during rental rollback: {}", picture.storagePath(), cleanupException);
+            }
+
+            log.error("Failed to create rental: error saving rental to database", e);
+            throw e;
+        }
         return new StandardResponseDto("Rental created !");
     }
 }

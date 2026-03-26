@@ -10,7 +10,13 @@ spring:
   config:
     import: "classpath:env-${spring.profiles.active}.yml"
 
-  # Security configuration
+  # Multipart file upload configuration
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+
+# Security configuration
 security:
   jwt:
     secret: ${JWT_SECRET}

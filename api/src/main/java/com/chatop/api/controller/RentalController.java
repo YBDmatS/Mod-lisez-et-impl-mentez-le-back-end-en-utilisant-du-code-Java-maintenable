@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,7 @@ public class RentalController {
      * @return HTTP 200 OK with a standard response containing the ID of the created rental if successful.
      */
     @PostMapping("/rentals")
-    public ResponseEntity<StandardResponseDto> createRental(@Valid RentalRequestDto request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<StandardResponseDto> createRental(@Valid @ModelAttribute RentalRequestDto request, @AuthenticationPrincipal Jwt jwt) {
         long userId = Long.parseLong(jwt.getSubject());
         log.debug("Received request to create a new rental from user {}", userId);
 

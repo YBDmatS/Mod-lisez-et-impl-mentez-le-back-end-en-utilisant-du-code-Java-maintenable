@@ -34,3 +34,7 @@ build/
 
 ### Env files ###
 env-*.yml
+
+# Uploads
+uploads/*
+!uploads/.gitkeep

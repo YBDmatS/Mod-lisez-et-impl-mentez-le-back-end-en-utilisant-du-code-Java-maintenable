@@ -1,11 +1,9 @@
 package com.chatop.api.config.properties;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.unit.DataSize;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -31,12 +29,6 @@ public class PictureStorageProperties {
     @NotBlank
     String relativePublicUrl;
 
-    /**
-     * Maximum allowed file size for uploaded pictures (e.g., "5MB").
-     * This field is required.
-     */
-    @NotNull
-    DataSize maxFileSize;
 
     /**
      * Base URL for accessing stored pictures.

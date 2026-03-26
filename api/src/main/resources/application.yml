@@ -25,5 +25,4 @@ security:
 picture-storage:
   upload-dir: uploads
   relative-public-url: /pictures/
-  max-file-size: 2MB
   base-url: ${PICTURE_BASE_URL}

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,7 +25,6 @@ public class PictureStorageService {
         log.debug("Storing picture");
 
         validateNotEmpty(picture);
-        validateSize(picture);
 
         String extension = extractExtension(picture);
 
@@ -59,12 +57,6 @@ public class PictureStorageService {
         }
     }
 
-    private void validateSize(MultipartFile picture) {
-        long maxSize = properties.getMaxFileSize().toBytes();
-        if (picture.getSize() > maxSize) {
-            throw new MaxUploadSizeExceededException(properties.getMaxFileSize().toBytes());
-        }
-    }
 
     private String extractExtension(MultipartFile picture) {
         String extension = StringUtils.getFilenameExtension(picture.getOriginalFilename());

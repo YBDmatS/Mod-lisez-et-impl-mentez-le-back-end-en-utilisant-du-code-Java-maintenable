@@ -1,9 +1,11 @@
 package com.chatop.api.service.storage;
 
+import com.chatop.api.config.properties.PictureStorageProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,6 +19,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class PictureStorageService {
+
+    private final PictureStorageProperties properties;
+
     public StoredPicture storePicture(MultipartFile picture) {
         log.debug("Storing picture");
 
@@ -55,9 +60,9 @@ public class PictureStorageService {
     }
 
     private void validateSize(MultipartFile picture) {
-        long maxSize = 2L * 1024 * 1024; // 2MB
+        long maxSize = properties.getMaxFileSize().toBytes();
         if (picture.getSize() > maxSize) {
-            throw new IllegalArgumentException("Picture exceeds max size of 2MB");
+            throw new MaxUploadSizeExceededException(properties.getMaxFileSize().toBytes());
         }
     }
 
@@ -68,7 +73,6 @@ public class PictureStorageService {
         }
         return extension.toLowerCase();
     }
-
 
     private void validateExtension(String extension) {
         List<String> allowed = List.of("jpg", "jpeg", "png", "webp");
@@ -93,7 +97,7 @@ public class PictureStorageService {
     }
 
     private Path resolveStoragePath(String fileName) {
-        Path uploadDir = Paths.get("uploads"); //TODO: uses properties
+        Path uploadDir = Paths.get(properties.getUploadDir());
         return uploadDir.resolve(fileName);
     }
 
@@ -114,7 +118,7 @@ public class PictureStorageService {
     }
 
     private String buildPublicUrl(String fileName) {
-        return "http://localhost:8080/uploads/" + fileName; //TODO: uses properties
+        return properties.getRelativePublicUrl() + fileName;
     }
 
     public void deleteByStoragePath(String path) {

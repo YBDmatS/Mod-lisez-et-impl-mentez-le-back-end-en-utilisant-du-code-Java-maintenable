@@ -1,5 +1,6 @@
 package com.chatop.api.config;
 
+import com.chatop.api.config.properties.FrontProperties;
 import com.chatop.api.config.properties.JwtProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,8 @@ class SpringSecurityConfigBearerTokenResolverTest {
     @BeforeEach
     void setUp() {
         JwtProperties jwtProperties = mock(JwtProperties.class);
-        SpringSecurityConfig config = new SpringSecurityConfig(jwtProperties);
+        FrontProperties frontProperties = mock(FrontProperties.class);
+        SpringSecurityConfig config = new SpringSecurityConfig(jwtProperties, frontProperties);
         bearerTokenResolver = config.bearerTokenResolver();
     }
 

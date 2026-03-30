@@ -110,7 +110,7 @@ class UserLoginServiceTest {
 
         // When & Then
         assertThatThrownBy(() -> userService.login(loginRequest))
-                .isInstanceOf(ClassCastException.class);
+                .isInstanceOf(IllegalStateException.class);
 
         verify(authenticationManager).authenticate(argThat(auth ->
                 auth instanceof UsernamePasswordAuthenticationToken

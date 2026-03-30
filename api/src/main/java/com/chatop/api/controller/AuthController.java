@@ -8,7 +8,6 @@ import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Slf4j
 public class AuthController {
 
     private final UserService userService;
@@ -34,11 +32,7 @@ public class AuthController {
      */
     @PostMapping("/register")
     public ResponseEntity<UserJwtResponseDto> registerUser(@Valid @RequestBody UserRegisterRequestDto request) {
-
-        log.debug("Received request to register user for email: {}", request.getEmail());
-
         UserJwtResponseDto response = userService.register(request);
-        log.debug("Successfully register user for email: {}", request.getEmail());
         return ResponseEntity.ok(response);
     }
 
@@ -50,11 +44,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<UserJwtResponseDto> login(@Valid @RequestBody UserLoginRequestDto request) {
-
-        log.debug("Received request to login user for email: {}", request.getEmail());
-
         UserJwtResponseDto response = userService.login(request);
-        log.debug("Successfully login user for email: {}", request.getEmail());
         return ResponseEntity.ok(response);
     }
 
@@ -67,10 +57,7 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<UserMeResponseDto> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         Long userId = Long.valueOf(jwt.getSubject());
-        log.debug("Received request to get current user for jwt: {}", userId);
-
         UserMeResponseDto response = userService.getCurrentUser(userId);
-        log.debug("Successfully retrieved current user for userId: {}", response.getId());
         return ResponseEntity.ok(response);
     }
 }

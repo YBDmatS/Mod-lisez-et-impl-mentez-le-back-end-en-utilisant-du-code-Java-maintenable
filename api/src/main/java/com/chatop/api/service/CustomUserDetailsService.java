@@ -2,6 +2,7 @@ package com.chatop.api.service;
 
 import com.chatop.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
     public final UserRepository userRepository;
@@ -26,6 +28,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         return userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No user found with email: " + username));
+                .orElseThrow(() -> {
+                    log.error("Failed to create rental: user not found with name: {}", username);
+                    return new UsernameNotFoundException("No user found with email: " + username);
+                });
     }
 }

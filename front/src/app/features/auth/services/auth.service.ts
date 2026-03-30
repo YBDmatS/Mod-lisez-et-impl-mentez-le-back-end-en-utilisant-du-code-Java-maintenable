@@ -12,7 +12,7 @@ import { RegisterRequest } from '../interfaces/registerRequest.interface';
 })
 export class AuthService {
   private readonly baseUrl = environment.baseUrl;
-  private readonly pathService = `${this.baseUrl}messages`;
+  private readonly pathService = `${this.baseUrl}auth`;
 
   constructor(private readonly httpClient: HttpClient) {}
 

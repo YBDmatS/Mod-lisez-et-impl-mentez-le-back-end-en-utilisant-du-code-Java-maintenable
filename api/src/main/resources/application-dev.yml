@@ -24,3 +24,7 @@ logging:
 server:
   tomcat:
     max-swallow-size: -1
+
+# CORS configuration for development
+front:
+  main-domain: http://localhost:4200

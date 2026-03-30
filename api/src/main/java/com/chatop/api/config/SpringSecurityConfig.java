@@ -1,10 +1,12 @@
 package com.chatop.api.config;
 
+import com.chatop.api.config.properties.FrontProperties;
 import com.chatop.api.config.properties.JwtProperties;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,10 +24,14 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Configuration class for Spring Security related beans.
@@ -37,6 +43,7 @@ import java.nio.charset.StandardCharsets;
 public class SpringSecurityConfig {
 
     private final JwtProperties jwtProperties;
+    private final FrontProperties frontProperties;
 
     /**
      * Configures the security filter chain for the application.
@@ -47,8 +54,10 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login",
@@ -88,7 +97,7 @@ public class SpringSecurityConfig {
         if (secret == null || secret.isBlank()) {
             throw new IllegalStateException("JWT secret must not be null or blank");
         }
-        
+
         return new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
     }
 
@@ -140,5 +149,25 @@ public class SpringSecurityConfig {
 
             return defaultResolver.resolve(request);
         };
+    }
+
+    /**
+     * Configures CORS settings for the application, allowing requests from specified origins and with specific methods and headers.
+     *
+     * @return a CorsConfigurationSource instance with the defined CORS settings
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(frontProperties.getMainDomain()));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type"
+        ));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", configuration);
+        return source;
     }
 }

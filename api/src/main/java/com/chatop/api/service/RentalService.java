@@ -34,13 +34,12 @@ public class RentalService {
      * @return A standard response with successfully message.
      */
     public StandardResponseDto createRental(@Valid RentalRequestDto request, long userId) {
-        log.debug("Creating rental");
 
         Rental rental = modelMapper.map(request, Rental.class);
 
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    log.warn("Failed to create rental: owner not found with id: {}", userId);
+                    log.error("Failed to create rental: owner not found with id: {}", userId);
                     return new IllegalArgumentException("Owner not found");
                 });
         rental.setOwner(owner);
@@ -50,10 +49,9 @@ public class RentalService {
 
         try {
             rentalRepository.save(rental);
-            log.debug("Rental created successfully with id: {}", rental.getId());
         } catch (Exception e) {
             try {
-                pictureStorageService.deleteByStoragePath(picture.storagePath());
+                pictureStorageService.deleteByStoragePath(picture);
             } catch (Exception cleanupException) {
                 log.error("Failed to delete stored picture during rental rollback: {}", picture.storagePath(), cleanupException);
             }

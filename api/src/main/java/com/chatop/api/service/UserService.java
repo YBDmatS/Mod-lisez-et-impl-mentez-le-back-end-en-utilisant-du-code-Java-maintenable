@@ -81,8 +81,7 @@ public class UserService {
                 )
         );
 
-        User principal = (User) authentication.getPrincipal();
-        if (!(principal instanceof User user)) {
+        if (!(authentication.getPrincipal() instanceof User user)) {
             throw new IllegalStateException("Authentication principal is not a User");
         }
 

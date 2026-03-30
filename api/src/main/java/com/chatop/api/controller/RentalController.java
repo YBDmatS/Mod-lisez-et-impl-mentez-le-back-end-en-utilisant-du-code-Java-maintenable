@@ -5,7 +5,6 @@ import com.chatop.api.dto.StandardResponseDto;
 import com.chatop.api.service.RentalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@Slf4j
 public class RentalController {
 
     private final RentalService rentalService;
@@ -34,10 +32,7 @@ public class RentalController {
     @PostMapping("/rentals")
     public ResponseEntity<StandardResponseDto> createRental(@Valid @ModelAttribute RentalRequestDto request, @AuthenticationPrincipal Jwt jwt) {
         long userId = Long.parseLong(jwt.getSubject());
-        log.debug("Received request to create a new rental from user {}", userId);
-
         StandardResponseDto response = rentalService.createRental(request, userId);
-        log.debug("Successfully created a new rental with id: {}", response.getMessage());
         return ResponseEntity.ok(response);
     }
 }

@@ -25,7 +25,6 @@ security:
   jwt:
     secret: test-secret-key-for-security-tests
 
-# Tomcat configuration to allow large file uploads (if needed)
-server:
-  tomcat:
-    max-swallow-size: -1
+# CORS configuration for development
+front:
+  main-domain: http://localhost:4200

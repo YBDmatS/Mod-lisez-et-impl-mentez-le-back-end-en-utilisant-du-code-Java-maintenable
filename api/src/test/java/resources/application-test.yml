@@ -24,3 +24,8 @@ spring:
 security:
   jwt:
     secret: test-secret-key-for-security-tests
+
+# Tomcat configuration to allow large file uploads (if needed)
+server:
+  tomcat:
+    max-swallow-size: -1

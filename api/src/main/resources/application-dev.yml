@@ -19,3 +19,8 @@ logging:
   level:
     org.springframework: DEBUG
     org.hibernate.SQL: DEBUG
+
+# Tomcat configuration to allow large file uploads (if needed)
+server:
+  tomcat:
+    max-swallow-size: -1

@@ -1,5 +1,6 @@
 package com.chatop.api.controller;
 
+import com.chatop.api.dto.RentalDto;
 import com.chatop.api.dto.RentalRequestDto;
 import com.chatop.api.dto.RentalsResponseDto;
 import com.chatop.api.dto.StandardResponseDto;
@@ -44,4 +45,18 @@ public class RentalController {
         RentalsResponseDto response = rentalService.getRentals();
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Endpoint to retrieve the details of a specific rental by its ID. This endpoint is accessible to all users, including unauthenticated ones.
+     *
+     * @param rentalId The ID of the rental to retrieve details for.
+     * @return HTTP 200 OK with a response containing the details of the specified rental if found.
+     */
+    @GetMapping("/rentals/{rentalId}")
+    public ResponseEntity<RentalDto> getRentalDetails(@PathVariable Long rentalId) {
+        RentalDto response = rentalService.getRentalDetails(rentalId);
+        return ResponseEntity.ok(response);
+    }
+
+
 }

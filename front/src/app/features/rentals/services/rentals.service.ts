@@ -11,7 +11,7 @@ import { RentalsResponse } from '../interfaces/api/rentalsResponse.interface';
 })
 export class RentalsService {
   private readonly baseUrl = environment.baseUrl;
-  private readonly pathService = `${this.baseUrl}rentals`;
+  private readonly pathService = `${this.baseUrl}messages`;
 
   constructor(private readonly httpClient: HttpClient) {}
 

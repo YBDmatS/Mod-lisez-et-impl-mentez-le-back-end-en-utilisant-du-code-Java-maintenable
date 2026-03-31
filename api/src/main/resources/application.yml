@@ -24,5 +24,6 @@ security:
 # file upload configuration
 picture-storage:
   upload-dir: uploads
+  public-path: /pictures/**
   relative-public-url: /pictures/
   base-url: ${PICTURE_BASE_URL}

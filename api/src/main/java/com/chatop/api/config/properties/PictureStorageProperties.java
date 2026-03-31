@@ -23,12 +23,18 @@ public class PictureStorageProperties {
     String uploadDir;
 
     /**
+     * Public path for accessing stored pictures.
+     * This field is required and must not be blank.
+     */
+    @NotBlank
+    String publicPath;
+
+    /**
      * Directory where pictures are publicly accessible.
      * This field is required and must not be blank.
      */
     @NotBlank
     String relativePublicUrl;
-
 
     /**
      * Base URL for accessing stored pictures.

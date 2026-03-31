@@ -61,6 +61,7 @@ public class SpringSecurityConfig {
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login",
+                                "/pictures/**",
                                 "/error",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

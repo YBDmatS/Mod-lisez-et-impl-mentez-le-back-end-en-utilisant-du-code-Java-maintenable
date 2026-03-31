@@ -67,6 +67,11 @@ public class RentalService {
         return new StandardResponseDto("Rental created !");
     }
 
+    /**
+     * Retrieves a list of rentals. This method is accessible to all users, including unauthenticated ones.
+     *
+     * @return A response containing the list of rentals.
+     */
     public RentalsResponseDto getRentals() {
         List<Rental> rentals = rentalRepository.findAll();
         RentalsResponseDto response = new RentalsResponseDto();
@@ -76,5 +81,20 @@ public class RentalService {
             response.getRentals().add(modelMapper.map(rental, RentalDto.class));
         }
         return response;
+    }
+
+    /**
+     * Retrieves the details of a specific rental by its ID.
+     *
+     * @param rentalId The ID of the rental to retrieve details for.
+     * @return A response containing the details of the specified rental.
+     */
+    public RentalDto getRentalDetails(Long rentalId) {
+        return rentalRepository.findById(rentalId)
+                .map(rental -> modelMapper.map(rental, RentalDto.class))
+                .orElseThrow(() -> {
+                    log.error("Failed to get rental details: rental not found with id: {}", rentalId);
+                    return new IllegalArgumentException("Rental not found");
+                });
     }
 }

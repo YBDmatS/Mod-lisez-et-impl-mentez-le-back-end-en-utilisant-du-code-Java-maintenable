@@ -1,9 +1,6 @@
 package com.chatop.api.controller;
 
-import com.chatop.api.dto.RentalDto;
-import com.chatop.api.dto.RentalRequestDto;
-import com.chatop.api.dto.RentalsResponseDto;
-import com.chatop.api.dto.StandardResponseDto;
+import com.chatop.api.dto.*;
 import com.chatop.api.service.RentalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +33,7 @@ public class RentalController {
     }
 
     /**
-     * Endpoint to retrieve a list of rentals. This endpoint is accessible to all users, including unauthenticated ones.
+     * Endpoint to retrieve a list of rentals.
      *
      * @return HTTP 200 OK with a response containing the list of rentals.
      */
@@ -47,7 +44,7 @@ public class RentalController {
     }
 
     /**
-     * Endpoint to retrieve the details of a specific rental by its ID. This endpoint is accessible to all users, including unauthenticated ones.
+     * Endpoint to retrieve the details of a specific rental by its ID.
      *
      * @param rentalId The ID of the rental to retrieve details for.
      * @return HTTP 200 OK with a response containing the details of the specified rental if found.
@@ -58,5 +55,20 @@ public class RentalController {
         return ResponseEntity.ok(response);
     }
 
-
+    /**
+     * Endpoint to update an existing rental with the provided rental request details.
+     *
+     * @param request The rental request containing necessary information for updating the rental.
+     * @param jwt     The JWT token containing the user's authentication information, automatically injected by Spring Security.
+     * @return HTTP 200 OK with a standard response containing the ID of the updated rental if successful.
+     */
+    @PutMapping("/rentals/{rentalId}")
+    public ResponseEntity<StandardResponseDto> updateRental(
+            @PathVariable Long rentalId,
+            @Valid @ModelAttribute RentalUpdateDto request,
+            @AuthenticationPrincipal Jwt jwt) {
+        long userId = Long.parseLong(jwt.getSubject());
+        StandardResponseDto response = rentalService.updateRental(rentalId, request, userId);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -3,6 +3,7 @@ package com.chatop.api.config;
 import com.chatop.api.config.properties.PictureStorageProperties;
 import com.chatop.api.dto.RentalDto;
 import com.chatop.api.dto.RentalRequestDto;
+import com.chatop.api.dto.RentalUpdateDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
 import com.chatop.api.model.Rental;
 import com.chatop.api.model.User;
@@ -42,6 +43,19 @@ public class ModelMapperConfig {
             mapper.map(RentalRequestDto::getPrice, Rental::setPricePerNight);
             mapper.skip(Rental::setId);
             mapper.skip(Rental::setOwner);
+            mapper.skip(Rental::setPictureUrl);
+            mapper.skip(Rental::setCreatedAt);
+            mapper.skip(Rental::setUpdatedAt);
+        });
+
+        TypeMap<RentalUpdateDto, Rental> rentalUpdateTypeMap =
+                modelMapper.createTypeMap(RentalUpdateDto.class, Rental.class);
+        rentalUpdateTypeMap.addMappings(mapper -> {
+            mapper.map(RentalUpdateDto::getSurface, Rental::setSurfaceArea);
+            mapper.map(RentalUpdateDto::getPrice, Rental::setPricePerNight);
+            mapper.skip(Rental::setId);
+            mapper.skip(Rental::setOwner);
+            mapper.skip(Rental::setPictureUrl);
             mapper.skip(Rental::setCreatedAt);
             mapper.skip(Rental::setUpdatedAt);
         });

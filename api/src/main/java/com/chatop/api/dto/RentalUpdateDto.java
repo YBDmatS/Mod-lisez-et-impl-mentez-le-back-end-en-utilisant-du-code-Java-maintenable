@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -14,7 +13,7 @@ import java.math.BigDecimal;
  */
 @Data
 @AllArgsConstructor
-public class RentalRequestDto {
+public class RentalUpdateDto {
 
     /**
      * Name of the rental property.
@@ -38,13 +37,6 @@ public class RentalRequestDto {
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be a positive number")
     private BigDecimal price;
-
-    /**
-     * Picture of the rental property.
-     * This field is required and must not be blank.
-     */
-    @NotNull(message = "Picture is required")
-    private MultipartFile picture;
 
     /**
      * Description of the rental property.

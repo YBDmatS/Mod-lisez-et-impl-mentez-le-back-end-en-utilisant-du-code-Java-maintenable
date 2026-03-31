@@ -1,9 +1,6 @@
 package com.chatop.api.service;
 
-import com.chatop.api.dto.RentalDto;
-import com.chatop.api.dto.RentalRequestDto;
-import com.chatop.api.dto.RentalsResponseDto;
-import com.chatop.api.dto.StandardResponseDto;
+import com.chatop.api.dto.*;
 import com.chatop.api.model.Rental;
 import com.chatop.api.model.User;
 import com.chatop.api.repository.RentalRepository;
@@ -96,5 +93,33 @@ public class RentalService {
                     log.error("Failed to get rental details: rental not found with id: {}", rentalId);
                     return new IllegalArgumentException("Rental not found");
                 });
+    }
+
+    /**
+     * Updates an existing rental with the provided rental request details.
+     * Only the owner of the rental is allowed to perform this operation.
+     *
+     * @param rentalId The ID of the rental to update.
+     * @param request  The rental request containing necessary information for updating the rental.
+     * @param userId   The ID of the user attempting to update the rental, used for authorization checks.
+     * @return A standard response with successfully message if the update is successful.
+     */
+    public StandardResponseDto updateRental(Long rentalId, @Valid RentalUpdateDto request, long userId) {
+
+        Rental rental = rentalRepository.findById(rentalId).orElseThrow(() -> {
+            log.error("Failed to get rental details to update: rental not found with id: {}", rentalId);
+            return new IllegalArgumentException("Rental not found");
+        });
+
+        if (rental.getOwner() == null || rental.getOwner().getId() != userId) {
+            log.warn("Failed to update rental: user {} is not the owner of rental {}", userId, rentalId);
+            throw new IllegalArgumentException("You are not allowed to update this rental");
+        }
+
+        modelMapper.map(request, rental);
+        rentalRepository.save(rental);
+
+        log.info("Rental updated successfully: rentalId={}, userId={}", rentalId, userId);
+        return new StandardResponseDto("Rental updated !");
     }
 }

@@ -39,10 +39,9 @@ public class UserService {
      * @throws UserAlreadyExistsException if a user with the same email already exists
      */
     public UserJwtResponseDto register(UserRegisterRequestDto dto) {
-        log.debug("Registering user for email: {}", dto.getEmail());
 
         if (userRepository.existsByEmail(dto.getEmail())) {
-            log.warn("User registration failed: email {} is already used", dto.getEmail());
+            log.error("User registration failed: email {} is already used", dto.getEmail());
             throw new UserAlreadyExistsException("Email already used");
         }
 
@@ -61,7 +60,6 @@ public class UserService {
         );
         String jwt = jwtService.generateToken(userId);
 
-        log.debug("User with email {} registered successfully", user.getEmail());
         return new UserJwtResponseDto(jwt);
     }
 
@@ -72,7 +70,6 @@ public class UserService {
      * @return a UserJwtResponseDto containing the generated JWT token if authentication is successful
      */
     public UserJwtResponseDto login(UserLoginRequestDto dto) {
-        log.debug("Login user for email: {}", dto.getEmail());
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -82,6 +79,8 @@ public class UserService {
         );
 
         if (!(authentication.getPrincipal() instanceof User user)) {
+            log.error("Authentication principal is not of type User: {}",
+                    Objects.requireNonNull(authentication.getPrincipal()).getClass().getName());
             throw new IllegalStateException("Authentication principal is not a User");
         }
 
@@ -91,7 +90,6 @@ public class UserService {
         );
         String jwt = jwtService.generateToken(userId);
 
-        log.debug("User with email {} logged successfully", user.getEmail());
         return new UserJwtResponseDto(jwt);
     }
 
@@ -102,17 +100,13 @@ public class UserService {
      * @return a UserMeResponseDto containing the current user's information if the user is found
      */
     public UserMeResponseDto getCurrentUser(Long id) {
-        log.debug("Get current user for userId: {}", id);
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn("User with id {} not found", id);
+                    log.error("User with id {} not found", id);
                     return new IllegalArgumentException("User not found");
                 });
 
-        UserMeResponseDto response = modelMapper.map(user, UserMeResponseDto.class);
-
-        log.debug("Current user for userId: {}", id);
-        return response;
+        return modelMapper.map(user, UserMeResponseDto.class);
     }
 }

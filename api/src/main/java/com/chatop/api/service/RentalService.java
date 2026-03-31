@@ -1,6 +1,8 @@
 package com.chatop.api.service;
 
+import com.chatop.api.dto.RentalDto;
 import com.chatop.api.dto.RentalRequestDto;
+import com.chatop.api.dto.RentalsResponseDto;
 import com.chatop.api.dto.StandardResponseDto;
 import com.chatop.api.model.Rental;
 import com.chatop.api.model.User;
@@ -13,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Service responsible for handling rental-related business logic.
@@ -60,5 +65,16 @@ public class RentalService {
             throw e;
         }
         return new StandardResponseDto("Rental created !");
+    }
+
+    public RentalsResponseDto getRentals() {
+        List<Rental> rentals = rentalRepository.findAll();
+        RentalsResponseDto response = new RentalsResponseDto();
+        response.setRentals(new ArrayList<>());
+
+        for (Rental rental : rentals) {
+            response.getRentals().add(modelMapper.map(rental, RentalDto.class));
+        }
+        return response;
     }
 }

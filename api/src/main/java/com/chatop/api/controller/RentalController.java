@@ -1,6 +1,7 @@
 package com.chatop.api.controller;
 
 import com.chatop.api.dto.RentalRequestDto;
+import com.chatop.api.dto.RentalsResponseDto;
 import com.chatop.api.dto.StandardResponseDto;
 import com.chatop.api.service.RentalService;
 import jakarta.validation.Valid;
@@ -8,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller responsible for handling rental-related endpoints.
@@ -33,6 +31,17 @@ public class RentalController {
     public ResponseEntity<StandardResponseDto> createRental(@Valid @ModelAttribute RentalRequestDto request, @AuthenticationPrincipal Jwt jwt) {
         long userId = Long.parseLong(jwt.getSubject());
         StandardResponseDto response = rentalService.createRental(request, userId);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Endpoint to retrieve a list of rentals. This endpoint is accessible to all users, including unauthenticated ones.
+     *
+     * @return HTTP 200 OK with a response containing the list of rentals.
+     */
+    @GetMapping("/rentals")
+    public ResponseEntity<RentalsResponseDto> getRentals() {
+        RentalsResponseDto response = rentalService.getRentals();
         return ResponseEntity.ok(response);
     }
 }

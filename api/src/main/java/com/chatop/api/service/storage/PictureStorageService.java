@@ -27,7 +27,7 @@ public class PictureStorageService {
     /**
      * Stores a picture
      *
-     * @param picture
+     * @param picture The MultipartFile picture to be stored.
      * @return a StoredPicture object containing metadata about the stored picture
      */
     public StoredPicture storePicture(MultipartFile picture) {

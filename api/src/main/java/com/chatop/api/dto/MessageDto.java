@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MessageDto {
-
+    
     /**
      * The ID of the user sending the message.
      * This field is required and must be a positive number.

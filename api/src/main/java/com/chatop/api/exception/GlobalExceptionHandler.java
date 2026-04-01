@@ -11,6 +11,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
@@ -163,6 +164,39 @@ public class GlobalExceptionHandler {
                 status.value(),
                 status.name(),
                 e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(response, status);
+    }
+
+    /**
+     * Handles MethodArgumentTypeMismatchException and returns a 400 Bad Request response.
+     * Triggered when a path variable or request parameter cannot be converted to the expected type
+     * (e.g. passing a letter where a numeric ID is expected).
+     *
+     * @param e       the exception to handle
+     * @param request the HTTP request that resulted in the exception
+     * @return a ResponseEntity containing the ApiErrorResponse with error details and HTTP status 400
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        Class<?> requiredType = e.getRequiredType();
+        String expectedType = requiredType != null ? requiredType.getSimpleName() : "unknown";
+        String errorMessage = String.format(
+                "Invalid value '%s' for parameter '%s': expected type %s",
+                e.getValue(),
+                e.getName(),
+                expectedType
+        );
+
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.name(),
+                errorMessage,
                 request.getRequestURI()
         );
 

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 /**
  * Repository interface for managing User entities.
+ * Extends JpaRepository to provide CRUD operations for User entities.
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

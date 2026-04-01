@@ -78,9 +78,12 @@ public class UserService {
                 )
         );
 
-        if (!(authentication.getPrincipal() instanceof User user)) {
-            log.error("Authentication principal is not of type User: {}",
-                    Objects.requireNonNull(authentication.getPrincipal()).getClass().getName());
+        Object principal = Objects.requireNonNull(
+                authentication.getPrincipal(),
+                "Authentication principal must not be null"
+        );
+        if (!(principal instanceof User user)) {
+            log.error("Authentication principal is not of type User: {}", principal.getClass().getName());
             throw new IllegalStateException("Authentication principal is not a User");
         }
 

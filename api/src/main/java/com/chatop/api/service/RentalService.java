@@ -112,14 +112,12 @@ public class RentalService {
         });
 
         if (rental.getOwner() == null || rental.getOwner().getId() != userId) {
-            log.warn("Failed to update rental: user {} is not the owner of rental {}", userId, rentalId);
+            log.error("Failed to update rental: user {} is not the owner of rental {}", userId, rentalId);
             throw new IllegalArgumentException("You are not allowed to update this rental");
         }
 
         modelMapper.map(request, rental);
         rentalRepository.save(rental);
-
-        log.info("Rental updated successfully: rentalId={}, userId={}", rentalId, userId);
         return new StandardResponseDto("Rental updated !");
     }
 }

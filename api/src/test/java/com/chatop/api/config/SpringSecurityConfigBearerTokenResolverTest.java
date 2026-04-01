@@ -2,6 +2,8 @@ package com.chatop.api.config;
 
 import com.chatop.api.config.properties.FrontProperties;
 import com.chatop.api.config.properties.JwtProperties;
+import com.chatop.api.security.CustomAccessDeniedHandler;
+import com.chatop.api.security.CustomAuthenticationEntryPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,9 @@ class SpringSecurityConfigBearerTokenResolverTest {
     void setUp() {
         JwtProperties jwtProperties = mock(JwtProperties.class);
         FrontProperties frontProperties = mock(FrontProperties.class);
-        SpringSecurityConfig config = new SpringSecurityConfig(jwtProperties, frontProperties);
+        CustomAccessDeniedHandler customAccessDeniedHandler = mock(CustomAccessDeniedHandler.class);
+        CustomAuthenticationEntryPoint customAuthenticationEntryPoint = mock(CustomAuthenticationEntryPoint.class);
+        SpringSecurityConfig config = new SpringSecurityConfig(jwtProperties, frontProperties, customAuthenticationEntryPoint, customAccessDeniedHandler);
         bearerTokenResolver = config.bearerTokenResolver();
     }
 

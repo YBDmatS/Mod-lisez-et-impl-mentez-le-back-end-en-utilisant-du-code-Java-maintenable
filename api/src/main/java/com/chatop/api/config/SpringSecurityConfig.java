@@ -2,6 +2,8 @@ package com.chatop.api.config;
 
 import com.chatop.api.config.properties.FrontProperties;
 import com.chatop.api.config.properties.JwtProperties;
+import com.chatop.api.security.CustomAccessDeniedHandler;
+import com.chatop.api.security.CustomAuthenticationEntryPoint;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +46,8 @@ public class SpringSecurityConfig {
 
     private final JwtProperties jwtProperties;
     private final FrontProperties frontProperties;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     /**
      * Configures the security filter chain for the application.
@@ -73,6 +77,10 @@ public class SpringSecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .bearerTokenResolver(bearerTokenResolver())
                         .jwt(Customizer.withDefaults()))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                )
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable);
         return http.build();

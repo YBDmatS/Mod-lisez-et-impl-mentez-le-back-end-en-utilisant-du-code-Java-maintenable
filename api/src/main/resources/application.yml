@@ -21,6 +21,10 @@ security:
   jwt:
     secret: ${JWT_SECRET}
 
+# CORS configuration for development
+front:
+  main-domain: ${MAIN_DOMAIN}
+
 # file upload configuration
 picture-storage:
   upload-dir: uploads

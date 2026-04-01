@@ -2,6 +2,7 @@ package com.chatop.api.config;
 
 import com.chatop.api.config.properties.FrontProperties;
 import com.chatop.api.config.properties.JwtProperties;
+import com.chatop.api.config.properties.PictureStorageProperties;
 import com.chatop.api.controller.AuthController;
 import com.chatop.api.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Security configuration WebMvc slice integration tests")
 @WebMvcTest(controllers = AuthController.class)
 @Import(SpringSecurityConfig.class)
-@EnableConfigurationProperties({JwtProperties.class, FrontProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, FrontProperties.class, PictureStorageProperties.class})
 @ActiveProfiles("test")
 class SpringSecurityConfigIntegrationTest {
 

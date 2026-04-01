@@ -35,7 +35,7 @@ public class RentalService {
      * @param request The rental request containing necessary information for creating a new rental.
      * @return A standard response with successfully message.
      */
-    public StandardResponseDto createRental(@Valid RentalRequestDto request, long userId) {
+    public StandardResponseDto createRental(@Valid RentalCreateRequestDto request, long userId) {
 
         Rental rental = modelMapper.map(request, Rental.class);
 
@@ -75,7 +75,7 @@ public class RentalService {
         response.setRentals(new ArrayList<>());
 
         for (Rental rental : rentals) {
-            response.getRentals().add(modelMapper.map(rental, RentalDto.class));
+            response.getRentals().add(modelMapper.map(rental, RentalDetailsResponseDto.class));
         }
         return response;
     }
@@ -86,9 +86,9 @@ public class RentalService {
      * @param rentalId The ID of the rental to retrieve details for.
      * @return A response containing the details of the specified rental.
      */
-    public RentalDto getRentalDetails(Long rentalId) {
+    public RentalDetailsResponseDto getRentalDetails(Long rentalId) {
         return rentalRepository.findById(rentalId)
-                .map(rental -> modelMapper.map(rental, RentalDto.class))
+                .map(rental -> modelMapper.map(rental, RentalDetailsResponseDto.class))
                 .orElseThrow(() -> {
                     log.error("Failed to get rental details: rental not found with id: {}", rentalId);
                     return new IllegalArgumentException("Rental not found");
@@ -104,7 +104,7 @@ public class RentalService {
      * @param userId   The ID of the user attempting to update the rental, used for authorization checks.
      * @return A standard response with successfully message if the update is successful.
      */
-    public StandardResponseDto updateRental(Long rentalId, @Valid RentalUpdateDto request, long userId) {
+    public StandardResponseDto updateRental(Long rentalId, @Valid RentalUpdateRequestDto request, long userId) {
 
         Rental rental = rentalRepository.findById(rentalId).orElseThrow(() -> {
             log.error("Failed to get rental details to update: rental not found with id: {}", rentalId);

@@ -15,5 +15,5 @@ public class RentalsResponseDto {
     /**
      * List of rental properties to be included in the response.
      */
-    private List<RentalDto> rentals;
+    private List<RentalDetailsResponseDto> rentals;
 }

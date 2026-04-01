@@ -26,7 +26,7 @@ public class RentalController {
      * @return HTTP 200 OK with a standard response containing the ID of the created rental if successful.
      */
     @PostMapping("/rentals")
-    public ResponseEntity<StandardResponseDto> createRental(@Valid @ModelAttribute RentalRequestDto request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<StandardResponseDto> createRental(@Valid @ModelAttribute RentalCreateRequestDto request, @AuthenticationPrincipal Jwt jwt) {
         long userId = Long.parseLong(jwt.getSubject());
         StandardResponseDto response = rentalService.createRental(request, userId);
         return ResponseEntity.ok(response);
@@ -50,8 +50,8 @@ public class RentalController {
      * @return HTTP 200 OK with a response containing the details of the specified rental if found.
      */
     @GetMapping("/rentals/{rentalId}")
-    public ResponseEntity<RentalDto> getRentalDetails(@PathVariable Long rentalId) {
-        RentalDto response = rentalService.getRentalDetails(rentalId);
+    public ResponseEntity<RentalDetailsResponseDto> getRentalDetails(@PathVariable Long rentalId) {
+        RentalDetailsResponseDto response = rentalService.getRentalDetails(rentalId);
         return ResponseEntity.ok(response);
     }
 
@@ -65,7 +65,7 @@ public class RentalController {
     @PutMapping("/rentals/{rentalId}")
     public ResponseEntity<StandardResponseDto> updateRental(
             @PathVariable Long rentalId,
-            @Valid @ModelAttribute RentalUpdateDto request,
+            @Valid @ModelAttribute RentalUpdateRequestDto request,
             @AuthenticationPrincipal Jwt jwt) {
         long userId = Long.parseLong(jwt.getSubject());
         StandardResponseDto response = rentalService.updateRental(rentalId, request, userId);

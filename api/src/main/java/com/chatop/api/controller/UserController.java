@@ -1,6 +1,6 @@
 package com.chatop.api.controller;
 
-import com.chatop.api.dto.UserMeResponseDto;
+import com.chatop.api.dto.UserDetailsResponseDto;
 import com.chatop.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +26,8 @@ public class UserController {
      * @return HTTP 200 OK with a response containing the user's details if the user is found.
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<UserMeResponseDto> getUserDetails(@PathVariable("userId") Long userId) {
-        UserMeResponseDto response = userService.getCurrentUser(userId);
+    public ResponseEntity<UserDetailsResponseDto> getUserDetails(@PathVariable("userId") Long userId) {
+        UserDetailsResponseDto response = userService.getCurrentUser(userId);
         return ResponseEntity.ok(response);
     }
 }

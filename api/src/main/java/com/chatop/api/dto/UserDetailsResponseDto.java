@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserMeResponseDto {
+public class UserDetailsResponseDto {
 
     /**
      * Unique identifier of the user.

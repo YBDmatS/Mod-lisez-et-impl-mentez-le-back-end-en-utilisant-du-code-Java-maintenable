@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class MessageDto {
+public class MessageCreateRequestDto {
     
     /**
      * The ID of the user sending the message.

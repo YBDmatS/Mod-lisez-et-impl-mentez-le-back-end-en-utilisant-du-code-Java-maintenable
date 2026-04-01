@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RentalDto {
+public class RentalDetailsResponseDto {
 
     /**
      * Unique identifier for the rental property.

@@ -148,6 +148,28 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles ResourceNotFoundException and returns a 404 Not Found response with error details.
+     *
+     * @param e       the exception to handle
+     * @param request the HTTP request that resulted in the exception
+     * @return a ResponseEntity containing the ApiErrorResponse with error details and HTTP status 404 Not Found
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.name(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(response, status);
+    }
+
+    /**
      * Handles IllegalArgumentException and returns a 400 Bad Request response.
      *
      * @param e       the exception to handle

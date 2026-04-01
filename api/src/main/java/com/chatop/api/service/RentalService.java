@@ -1,6 +1,7 @@
 package com.chatop.api.service;
 
 import com.chatop.api.dto.*;
+import com.chatop.api.exception.ResourceNotFoundException;
 import com.chatop.api.model.Rental;
 import com.chatop.api.model.User;
 import com.chatop.api.repository.RentalRepository;
@@ -42,7 +43,7 @@ public class RentalService {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.error("Failed to create rental: owner not found with id: {}", userId);
-                    return new IllegalArgumentException("Owner not found");
+                    return new ResourceNotFoundException("Owner not found");
                 });
         rental.setOwner(owner);
 
@@ -85,13 +86,14 @@ public class RentalService {
      *
      * @param rentalId The ID of the rental to retrieve details for.
      * @return A response containing the details of the specified rental.
+     * @throws ResourceNotFoundException if no rental with the provided ID is found in the database.
      */
     public RentalDetailsResponseDto getRentalDetails(Long rentalId) {
         return rentalRepository.findById(rentalId)
                 .map(rental -> modelMapper.map(rental, RentalDetailsResponseDto.class))
                 .orElseThrow(() -> {
                     log.error("Failed to get rental details: rental not found with id: {}", rentalId);
-                    return new IllegalArgumentException("Rental not found");
+                    return new ResourceNotFoundException("Rental not found");
                 });
     }
 
@@ -108,7 +110,7 @@ public class RentalService {
 
         Rental rental = rentalRepository.findById(rentalId).orElseThrow(() -> {
             log.error("Failed to get rental details to update: rental not found with id: {}", rentalId);
-            return new IllegalArgumentException("Rental not found");
+            return new ResourceNotFoundException("Rental not found");
         });
 
         if (rental.getOwner() == null || rental.getOwner().getId() != userId) {

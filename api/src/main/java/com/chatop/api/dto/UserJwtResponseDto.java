@@ -1,5 +1,6 @@
 package com.chatop.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,10 +10,9 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@Schema(name = "AuthToken", description = "JWT token returned after successful authentication or registration")
 public class UserJwtResponseDto {
 
-    /**
-     * JWT token for the authenticated user.
-     */
+    @Schema(description = "JWT Bearer token", example = "eyJhbGciOiJIUzI1NiJ9...")
     private String token;
 }

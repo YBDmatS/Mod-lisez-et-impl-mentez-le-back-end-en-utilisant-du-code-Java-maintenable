@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  */
 @Data
 @AllArgsConstructor
-public class RentalRequestDto {
+public class RentalCreateRequestDto {
 
     /**
      * Name of the rental property.

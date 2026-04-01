@@ -1,6 +1,6 @@
 package com.chatop.api.controller;
 
-import com.chatop.api.dto.MessageDto;
+import com.chatop.api.dto.MessageCreateRequestDto;
 import com.chatop.api.dto.StandardResponseDto;
 import com.chatop.api.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class MessageController {
      * @return HTTP 200 OK with a standard response indicating the success of the message creation
      */
     @PostMapping
-    public ResponseEntity<StandardResponseDto> createMessage(@RequestBody MessageDto messageDto) {
+    public ResponseEntity<StandardResponseDto> createMessage(@RequestBody MessageCreateRequestDto messageDto) {
         StandardResponseDto response = messageService.createMessage(messageDto);
         return ResponseEntity.ok(response);
     }

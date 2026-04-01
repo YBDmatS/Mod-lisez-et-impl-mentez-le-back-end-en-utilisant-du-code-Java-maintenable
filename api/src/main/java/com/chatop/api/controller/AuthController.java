@@ -1,8 +1,8 @@
 package com.chatop.api.controller;
 
+import com.chatop.api.dto.UserDetailsResponseDto;
 import com.chatop.api.dto.UserJwtResponseDto;
 import com.chatop.api.dto.UserLoginRequestDto;
-import com.chatop.api.dto.UserMeResponseDto;
 import com.chatop.api.dto.UserRegisterRequestDto;
 import com.chatop.api.exception.UserAlreadyExistsException;
 import com.chatop.api.service.UserService;
@@ -55,9 +55,9 @@ public class AuthController {
      * @return HTTP 200 OK with the current user's information if the JWT token is valid and the user is authenticated
      */
     @GetMapping("/me")
-    public ResponseEntity<UserMeResponseDto> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<UserDetailsResponseDto> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         Long userId = Long.valueOf(jwt.getSubject());
-        UserMeResponseDto response = userService.getCurrentUser(userId);
+        UserDetailsResponseDto response = userService.getCurrentUser(userId);
         return ResponseEntity.ok(response);
     }
 }

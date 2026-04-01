@@ -13,7 +13,7 @@ import java.math.BigDecimal;
  */
 @Data
 @AllArgsConstructor
-public class RentalUpdateDto {
+public class RentalUpdateRequestDto {
 
     /**
      * Name of the rental property.

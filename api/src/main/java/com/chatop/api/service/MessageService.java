@@ -1,6 +1,6 @@
 package com.chatop.api.service;
 
-import com.chatop.api.dto.MessageDto;
+import com.chatop.api.dto.MessageCreateRequestDto;
 import com.chatop.api.dto.StandardResponseDto;
 import com.chatop.api.model.Message;
 import com.chatop.api.model.Rental;
@@ -30,7 +30,7 @@ public class MessageService {
      * @param messageDto the message data transfer object containing the user ID of the sender, the rental ID, and the message content
      * @return a standard response data transfer object indicating the success of the message creation
      */
-    public StandardResponseDto createMessage(MessageDto messageDto) {
+    public StandardResponseDto createMessage(MessageCreateRequestDto messageDto) {
         Message message = new Message();
 
         User sender = userRepository.findById(messageDto.getUserId())

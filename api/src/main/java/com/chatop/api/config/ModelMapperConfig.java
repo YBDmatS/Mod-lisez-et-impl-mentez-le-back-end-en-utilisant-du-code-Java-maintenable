@@ -1,12 +1,10 @@
 package com.chatop.api.config;
 
 import com.chatop.api.config.properties.PictureStorageProperties;
-import com.chatop.api.dto.RentalDto;
-import com.chatop.api.dto.RentalRequestDto;
-import com.chatop.api.dto.RentalUpdateDto;
-import com.chatop.api.dto.UserRegisterRequestDto;
+import com.chatop.api.dto.RentalCreateRequestDto;
+import com.chatop.api.dto.RentalDetailsResponseDto;
+import com.chatop.api.dto.RentalUpdateRequestDto;
 import com.chatop.api.model.Rental;
-import com.chatop.api.model.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -31,16 +29,11 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        TypeMap<User, UserRegisterRequestDto> userRegisterRequestTypeMap =
-                modelMapper.createTypeMap(User.class, UserRegisterRequestDto.class);
-        userRegisterRequestTypeMap.addMappings(mapper ->
-                mapper.skip(UserRegisterRequestDto::setPassword));
-
-        TypeMap<RentalRequestDto, Rental> rentalRequesTypeMap =
-                modelMapper.createTypeMap(RentalRequestDto.class, Rental.class);
+        TypeMap<RentalCreateRequestDto, Rental> rentalRequesTypeMap =
+                modelMapper.createTypeMap(RentalCreateRequestDto.class, Rental.class);
         rentalRequesTypeMap.addMappings(mapper -> {
-            mapper.map(RentalRequestDto::getSurface, Rental::setSurfaceArea);
-            mapper.map(RentalRequestDto::getPrice, Rental::setPricePerNight);
+            mapper.map(RentalCreateRequestDto::getSurface, Rental::setSurfaceArea);
+            mapper.map(RentalCreateRequestDto::getPrice, Rental::setPricePerNight);
             mapper.skip(Rental::setId);
             mapper.skip(Rental::setOwner);
             mapper.skip(Rental::setPictureUrl);
@@ -48,11 +41,11 @@ public class ModelMapperConfig {
             mapper.skip(Rental::setUpdatedAt);
         });
 
-        TypeMap<RentalUpdateDto, Rental> rentalUpdateTypeMap =
-                modelMapper.createTypeMap(RentalUpdateDto.class, Rental.class);
+        TypeMap<RentalUpdateRequestDto, Rental> rentalUpdateTypeMap =
+                modelMapper.createTypeMap(RentalUpdateRequestDto.class, Rental.class);
         rentalUpdateTypeMap.addMappings(mapper -> {
-            mapper.map(RentalUpdateDto::getSurface, Rental::setSurfaceArea);
-            mapper.map(RentalUpdateDto::getPrice, Rental::setPricePerNight);
+            mapper.map(RentalUpdateRequestDto::getSurface, Rental::setSurfaceArea);
+            mapper.map(RentalUpdateRequestDto::getPrice, Rental::setPricePerNight);
             mapper.skip(Rental::setId);
             mapper.skip(Rental::setOwner);
             mapper.skip(Rental::setPictureUrl);
@@ -60,15 +53,15 @@ public class ModelMapperConfig {
             mapper.skip(Rental::setUpdatedAt);
         });
 
-        TypeMap<Rental, RentalDto> rentalResponseTypeMap =
-                modelMapper.createTypeMap(Rental.class, RentalDto.class);
+        TypeMap<Rental, RentalDetailsResponseDto> rentalResponseTypeMap =
+                modelMapper.createTypeMap(Rental.class, RentalDetailsResponseDto.class);
         rentalResponseTypeMap.addMappings(mapper -> {
-            mapper.map(src -> src.getOwner().getId(), RentalDto::setOwnerId);
+            mapper.map(src -> src.getOwner().getId(), RentalDetailsResponseDto::setOwnerId);
             mapper
                     .using(ctx -> buildPictureUrl((String) ctx.getSource()))
-                    .map(Rental::getPictureUrl, RentalDto::setPictureUrl);
-            mapper.map(Rental::getSurfaceArea, RentalDto::setSurface);
-            mapper.map(Rental::getPricePerNight, RentalDto::setPrice);
+                    .map(Rental::getPictureUrl, RentalDetailsResponseDto::setPictureUrl);
+            mapper.map(Rental::getSurfaceArea, RentalDetailsResponseDto::setSurface);
+            mapper.map(Rental::getPricePerNight, RentalDetailsResponseDto::setPrice);
         });
 
         return modelMapper;

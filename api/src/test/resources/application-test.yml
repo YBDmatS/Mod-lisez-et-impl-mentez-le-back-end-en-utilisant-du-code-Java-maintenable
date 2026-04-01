@@ -28,3 +28,7 @@ security:
 # CORS configuration for development
 front:
   main-domain: http://localhost:4200
+
+# file upload configuration
+picture-storage:
+  base-url: http://localhost:8080

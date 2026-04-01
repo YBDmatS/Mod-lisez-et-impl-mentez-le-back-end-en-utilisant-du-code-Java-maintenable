@@ -2,6 +2,7 @@ package com.chatop.api.service;
 
 import com.chatop.api.dto.MessageCreateRequestDto;
 import com.chatop.api.dto.StandardResponseDto;
+import com.chatop.api.exception.ResourceNotFoundException;
 import com.chatop.api.model.Message;
 import com.chatop.api.model.Rental;
 import com.chatop.api.model.User;
@@ -29,6 +30,7 @@ public class MessageService {
      *
      * @param messageDto the message data transfer object containing the user ID of the sender, the rental ID, and the message content
      * @return a standard response data transfer object indicating the success of the message creation
+     * @throws ResourceNotFoundException if the sender user or the rental associated with the message is not found in the database
      */
     public StandardResponseDto createMessage(MessageCreateRequestDto messageDto) {
         Message message = new Message();
@@ -36,14 +38,14 @@ public class MessageService {
         User sender = userRepository.findById(messageDto.getUserId())
                 .orElseThrow(() -> {
                     log.error("User not found with id: {}", messageDto.getUserId());
-                    return new RuntimeException("User not found with id: " + messageDto.getUserId());
+                    return new ResourceNotFoundException("User not found");
                 });
         message.setSender(sender);
 
         Rental rental = rentalRepository.findById(messageDto.getRentalId())
                 .orElseThrow(() -> {
                     log.error("Rental not found with id: {}", messageDto.getRentalId());
-                    return new RuntimeException("Rental not found with id: " + messageDto.getRentalId());
+                    return new ResourceNotFoundException("Rental not found");
                 });
         message.setRental(rental);
 

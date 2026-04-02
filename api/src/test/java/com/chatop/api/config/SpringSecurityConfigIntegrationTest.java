@@ -1,0 +1,63 @@
+package com.chatop.api.config;
+
+import com.chatop.api.config.properties.FrontProperties;
+import com.chatop.api.config.properties.JwtProperties;
+import com.chatop.api.config.properties.PictureStorageProperties;
+import com.chatop.api.controller.AuthController;
+import com.chatop.api.security.CustomAccessDeniedHandler;
+import com.chatop.api.security.CustomAuthenticationEntryPoint;
+import com.chatop.api.service.UserService;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@DisplayName("Security configuration WebMvc slice integration tests")
+@WebMvcTest(controllers = AuthController.class)
+@Import({
+        SpringSecurityConfig.class,
+        CustomAccessDeniedHandler.class,
+        CustomAuthenticationEntryPoint.class
+})
+@EnableConfigurationProperties({
+        JwtProperties.class,
+        FrontProperties.class,
+        PictureStorageProperties.class
+})
+@ActiveProfiles("test")
+class SpringSecurityConfigIntegrationTest {
+
+    public static final String REGISTER_PATH = "/api/auth/register";
+
+    @MockitoBean
+    private UserService userService;
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void register_shouldBeAccessibleWithoutAuthentication() throws Exception {
+
+        //Given
+        String body = """
+                {
+                  "name": "Test",
+                  "email": "test@test.com",
+                  "password": "P@ssword123!"
+                }
+                """;
+
+        mockMvc.perform(post(REGISTER_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isOk());
+    }
+}

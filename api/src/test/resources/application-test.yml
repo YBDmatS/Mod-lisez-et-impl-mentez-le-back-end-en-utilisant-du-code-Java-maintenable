@@ -1,0 +1,34 @@
+#H2 database configuration for testing purposes
+spring:
+  datasource:
+    url: jdbc:h2:mem:chatop_test
+    driver-class-name: org.h2.Driver
+    username: chatop_test_user
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+  h2:
+    console:
+      enabled: true
+
+  sql:
+    init:
+      mode: never
+
+# Security configuration
+security:
+  jwt:
+    secret: test-secret-key-for-security-tests
+
+# CORS configuration for development
+front:
+  main-domain: http://localhost:4200
+
+# file upload configuration
+picture-storage:
+  base-url: http://localhost:8080

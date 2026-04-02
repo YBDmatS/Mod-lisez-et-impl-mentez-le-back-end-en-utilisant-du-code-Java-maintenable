@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: api
+
+  # Default active profile for local development
+  profiles:
+    active: dev
+
+  # Load environment-specific configuration
+  config:
+    import: "classpath:env-${spring.profiles.active}.yml"
+
+  # Multipart file upload configuration
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+
+# Security configuration
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+
+# CORS configuration for development
+front:
+  main-domain: ${MAIN_DOMAIN}
+
+# file upload configuration
+picture-storage:
+  upload-dir: uploads
+  public-path: /pictures/**
+  relative-public-url: /pictures/
+  base-url: ${PICTURE_BASE_URL}
